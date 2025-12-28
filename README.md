@@ -8,7 +8,7 @@ A robust, production-ready Django application for managing restaurant dine-in op
 - **Architecture**: Domain-Driven Design using strict Service Layer (`core/services.py`) and standard Django internals.
 - **Robustness**:
     - **Celery & Redis**: Background tasks for kitchen notifications and automated table cleanup.
-    - **Daphne`: ASGI Production Server for handling HTTP and WebSocket protocols concurrently.
+    - **Daphne**: ASGI Production Server for handling HTTP and WebSocket protocols concurrently.
     - **Self-Healing**: Automated `entrypoint.sh` for migrations, static collection, and data seeding on every boot.
 - **Security**: strict Role-Based Access Control (RBAC) for Managers, Waiters, and Cashiers.
 - **Reporting**: Daily sales reports and "Top 5 Items" dashboard for Managers.
