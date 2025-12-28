@@ -1,0 +1,369 @@
+:root {
+    --bg-dark: #1a1a2e;
+    --card-bg: #16213e;
+    --primary: #0f3460;
+    --secondary: #e94560;
+    --text: #ffffff;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f1c40f;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+/* ... existing styles would technically go here but we are appending/replacing ... */
+/* NOTE: Re-writing full file since I don't have append tool easily without reading all */
+/* Wait, I should read existing file first to append properly or I can overwrite if I am confident. */
+/* I will overwrite with a clean set + print styles since I initially created it simple. */
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar {
+    background: var(--card-bg);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--secondary);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links a:hover {
+    color: var(--secondary);
+}
+
+.container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+}
+
+.btn-success {
+    background-color: var(--success);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: rgba(231, 76, 60, 0.2);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.alert-success {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th,
+td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+    color: var(--secondary);
+}
+
+/* Utility */
+.text-muted {
+    opacity: 0.6;
+}
+
+/* Print Styles for Bill */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .navbar,
+    .actions,
+    .breadcrumb,
+    button,
+    form {
+        display: none !important;
+    }
+
+    .dashboard-header,
+    .sidebar {
+        display: none !important;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        color: black;
+        background: white;
+    }
+
+    .bill-section {
+        display: block !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .table-order-section {
+        display: none;
+    }
+
+    /* Hide active items list if we only want bill */
+    /* Only show bill-card */
+    .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Hide everything except the bill card */
+    body>* {
+        visibility: hidden;
+    }
+
+    .bill-card,
+    .bill-card * {
+        visibility: visible;
+    }
+
+    .bill-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 2rem;
+        border: none;
+    }
+}
+
+/* Dashboard Styles */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stats-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+
+.text-success {
+    color: var(--success);
+}
+
+.text-danger {
+    color: var(--danger);
+}
+
+.text-warning {
+    color: var(--warning);
+}
+
+.table-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: border-color 0.3s;
+    pointer-events: none;
+}
+
+.status-AVAILABLE::before {
+    border-color: rgba(46, 204, 113, 0.3);
+}
+
+.status-OCCUPIED {
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.status-OCCUPIED::before {
+    border-color: var(--danger);
+}
+
+.status-BILL_REQUESTED {
+    background: rgba(241, 196, 15, 0.1);
+}
+
+.status-BILL_REQUESTED::before {
+    border-color: var(--warning);
+    border-style: dashed;
+}
+
+.table-icon {
+    background: rgba(255, 255, 255, 0.1);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--secondary);
+}
+
+.status-AVAILABLE .table-icon {
+    background: rgba(46, 204, 113, 0.2);
+    color: var(--success);
+}
+
+.status-OCCUPIED .table-icon {
+    background: rgba(231, 76, 60, 0.2);
+    color: var(--danger);
+}
+
+.table-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.capacity-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    opacity: 0.7;
+}
+
+.status-pill {
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.status-pill.available {
+    color: var(--success);
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.status-pill.occupied {
+    color: var(--danger);
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.status-pill.bill_requested {
+    color: var(--warning);
+    background: rgba(241, 196, 15, 0.1);
+}
+
+.active-order-summary {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}

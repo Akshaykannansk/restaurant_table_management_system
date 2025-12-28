@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">&larr; Back to Dashboard</a>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;">
+    <!-- Left Column: Table Status & Active Order -->
+    <div>
+        <div class="card status-{{ table.status }}">
+            <h2>Table {{ table.table_number }}</h2>
+            <div style="margin-bottom: 1rem;">
+                Status: <strong>{{ table.get_status_display }}</strong>
+            </div>
+
+            {% if active_order %}
+            <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h3>Order #{{ active_order.id }}</h3>
+                <p>Status: <span class="badge">{{ active_order.get_status_display }}</span></p>
+
+                <ul style="list-style: none; padding: 0;">
+                    {% for item in active_order.items.all %}
+                    <li
+                        style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <span>{{ item.quantity }}x {{ item.menu_item.name }}</span>
+                        <span>${{ item.total_price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Calculate Subtotal in template or view? Ideally view/model, but quick loop here -->
+                <!-- Used total_price property -->
+            </div>
+
+            <!-- Order Actions -->
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                {% if active_order.status == 'PLACED' %}
+                <a href="{% url 'update_order_status' active_order.id 'IN_KITCHEN' %}" class="btn btn-primary">Send to
+                    Kitchen</a>
+                {% endif %}
+                {% if active_order.status == 'IN_KITCHEN' %}
+                <a href="{% url 'update_order_status' active_order.id 'SERVED' %}" class="btn btn-success">Mark
+                    Served</a>
+                {% endif %}
+            </div>
+
+            <!-- Billing Actions -->
+            <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1rem;">
+                {% if table.status == 'OCCUPIED' or table.status == 'AVAILABLE' %}
+                <!-- If Occupied, can generate bill -->
+                {% if table.status == 'OCCUPIED' %}
+                <form method="post" action="{% url 'generate_bill' table.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning" style="width: 100%;">Generate Bill</button>
+                </form>
+                {% endif %}
+                {% elif table.status == 'BILL_REQUESTED' %}
+                <div style="text-align: center;">
+                    <h3 style="color: var(--warning);">Bill Total: ${{ bill.total_amount }}</h3>
+                    <form method="post" action="{% url 'pay_bill' bill.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success" style="width: 100%; font-size: 1.2rem;">Complete
+                            Payment</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+            {% else %}
+            <p>No active order.</p>
+            <p class="text-muted">Select items from the menu to start a new order.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Column: Menu -->
+    <div class="card">
+        <h2>Menu</h2>
+
+        <form method="post"
+            action="{% if active_order %}{% url 'add_items' active_order.id %}{% else %}{% url 'create_order' table.id %}{% endif %}">
+            {% csrf_token %}
+
+            {% for category, items in menu_by_category.items %}
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="color: var(--secondary); border-bottom: 2px solid var(--secondary); padding-bottom: 0.5rem;">
+                    {{ category|title }}</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                    {% for item in items %}
+                    <div class="menu-item"
+                        style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <strong>{{ item.name }}</strong>
+                            <span>${{ item.price }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <button type="button" class="btn-qty" onclick="adjQty('{{ item.id }}', -1)">-</button>
+                            <input type="number" name="item_{{ item.id }}" id="qty_{{ item.id }}" value="0" min="0"
+                                style="width: 40px; text-align: center; background: transparent; color: white; border: 1px solid #555; border-radius: 4px;">
+                            <button type="button" class="btn-qty" onclick="adjQty('{{ item.id }}', 1)">+</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div
+                style="position: sticky; bottom: 0; background: var(--card-bg); padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+                <span>Select items to order</span>
+                <button type="submit" class="btn btn-primary">
+                    {% if active_order %}Add Items{% else %}Place Order{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function adjQty(itemId, delta) {
+        const input = document.getElementById('qty_' + itemId);
+        let val = parseInt(input.value) || 0;
+        val += delta;
+        if (val < 0) val = 0;
+        input.value = val;
+    }
+</script>
+
+<style>
+    .btn-qty {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .btn-qty:hover {
+        background: var(--primary);
+    }
+
+    /* Re-use status colors for border left of card */
+    .status-AVAILABLE {
+        border-left: 5px solid var(--success);
+    }
+
+    .status-OCCUPIED {
+        border-left: 5px solid var(--danger);
+    }
+
+    .status-BILL_REQUESTED {
+        border-left: 5px solid var(--warning);
+    }
+</style>
+{% endblock %}

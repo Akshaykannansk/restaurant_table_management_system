@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 0 auto;">
+    <div class="card">
+        <h2 style="margin-top: 0;">Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div style="margin-bottom: 1rem;">
+                <label style="display:block; margin-bottom: 0.5rem;">Username</label>
+                <input type="text" name="username" class="form-control"
+                    style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; background: #222; color: white;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display:block; margin-bottom: 0.5rem;">Password</label>
+                <input type="password" name="password" class="form-control"
+                    style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; background: #222; color: white;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

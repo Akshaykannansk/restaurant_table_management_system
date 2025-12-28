@@ -1,0 +1,9 @@
+Django>=4.2,<5.0
+djangorestframework
+celery
+redis
+django-cors-headers
+django-filter
+psycopg2-binary
+channels[daphne]
+python-dotenv

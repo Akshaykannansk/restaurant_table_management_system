@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Floor Plan</h1>
+        <p class="text-muted">Live view of restaurant tables</p>
+    </div>
+
+    <!-- Status Legend & Metrics -->
+    <div class="stats-container">
+        <div class="stat-item">
+            <span class="stat-value text-success">{{ total_available|default:"-" }}</span>
+            <span class="stat-label">Available</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value text-danger">{{ total_occupied|default:"-" }}</span>
+            <span class="stat-label">Occupied</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value text-warning">{{ total_billing|default:"-" }}</span>
+            <span class="stat-label">Billing</span>
+        </div>
+    </div>
+</div>
+
+<div class="grid" style="margin-top: 2rem;">
+    {% for table in tables %}
+    <a href="{% url 'table_detail' table.id %}" class="card table-card status-{{ table.status }}">
+        <div class="card-body">
+            <div class="table-icon">
+                <span class="table-number">{{ table.table_number }}</span>
+            </div>
+
+            <div class="table-info">
+                <div class="capacity-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                        <path fill-rule="evenodd"
+                            d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                        <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                    </svg>
+                    {{ table.seating_capacity }} Seats
+                </div>
+
+                <div class="status-pill {{ table.status|lower }}">
+                    {{ table.get_status_display }}
+                </div>
+            </div>
+
+            {% if table.active_order %}
+            <div class="active-order-summary">
+                <span>Order #{{ table.active_order.id }}</span>
+                <span>{{ table.active_order.items.count }} items</span>
+            </div>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}
+{% endblock %}
